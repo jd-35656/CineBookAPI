@@ -1,0 +1,19 @@
+services:
+  api:
+    image: cine_book_api_image-dev:1
+    build:
+      context: ../../
+      dockerfile: docker/dev/Dockerfile
+    ports:
+      - 8000:8000
+    container_name: cine_book_api_container_dev
+    develop:
+      watch:
+        - path: ../../src/
+          action: sync
+          target: /app/src/
+          ignore:
+            - Pipfile
+            - Pipfile.lock
+        - path: ../../Pipfile
+          action: rebuild
