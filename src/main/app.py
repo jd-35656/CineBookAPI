@@ -23,7 +23,23 @@ from flask import Flask
 class MyApp:  # pylint: disable=too-few-public-methods
     """
     Represents the main application class for CineBookAPI.
+
+    Methods
+    -------
+    create_app(self)
+        Returns the Flask application instance.
     """
 
     def __init__(self) -> None:
         self._app: Flask = Flask("CineBookAPI")
+
+    def create_app(self) -> Flask:
+        """
+        Returns the Flask application instance.
+
+        Returns
+        -------
+        Flask
+            The Flask application instance.
+        """
+        return self._app
