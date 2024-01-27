@@ -52,6 +52,9 @@ class Logger:
     debug(msg: str) -> None:
         Log a debug message using the configured logger.
 
+    info(msg: str) -> None:
+        Log a info message using the configured logger.
+
     Example
     -------
     Create an instance of Logger to initialize the CineBookAPI Flask
@@ -119,3 +122,18 @@ class Logger:
         None
         """
         self._logger.debug(msg)  # type: ignore
+
+    def info(self, msg: str) -> None:
+        """
+        Log a info message using the configured logger.
+
+        Parameters
+        ----------
+        msg : str
+            The info message to be logged.
+
+        Returns
+        -------
+        None
+        """
+        self._logger.info(msg)  # type: ignore
