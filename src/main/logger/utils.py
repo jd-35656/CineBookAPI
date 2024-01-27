@@ -7,6 +7,19 @@ in Flask applications.
 
 Functions
 ---------
+parse_request(request_data: Request) -> Dict[str, Any]:
+    Parse a Flask Request object and create a dictionary representation.
+
+    Parameters
+    ----------
+    request_data : Request
+        The Flask Request object to be parsed.
+
+    Returns
+    -------
+    Dict[str, Any]
+        A dictionary representation of the parsed request.
+
 parse_body(
     request_response: Union[Request, Response]
     ) -> Optional[Dict[str, Any]]:
@@ -43,6 +56,39 @@ import json
 from typing import Any, Dict, Optional, Union
 
 from flask import Request, Response
+
+
+def parse_request(request_data: Request) -> Dict[str, Any]:
+    """
+    Parse a Flask Request object and create a dictionary representation.
+
+    Parameters
+    ----------
+    request_data : Request
+        The Flask Request object to be parsed.
+
+    Returns
+    -------
+    Dict[str, Any]
+        A dictionary representation of the parsed request.
+    """
+    return {
+        "title": (
+            f"{request_data.method} {request_data.path} "
+            f'{request_data.environ["SERVER_PROTOCOL"]}'
+        ),
+        "timestamp": str(request_data.timestamp),  # type: ignore
+        "body": {
+            "event": "Request received",
+            "details": {
+                "method": request_data.method,
+                "host": request_data.host,
+                "path": request_data.path,
+                "headers": parse_header(request_data.headers),
+                "body": parse_body(request_data),
+            },
+        },
+    }
 
 
 def parse_header(headers: Dict[str, Any]) -> Dict[str, Any]:
