@@ -20,6 +20,19 @@ parse_request(request_data: Request) -> Dict[str, Any]:
     Dict[str, Any]
         A dictionary representation of the parsed request.
 
+parse_response(response_data: Response) -> Dict[str, Any]:
+    Parse a Flask Response object and create a dictionary representation.
+
+    Parameters
+    ----------
+    response_data : Response
+        The Flask Response object to be parsed.
+
+    Returns
+    -------
+    Dict[str, Any]
+        A dictionary representation of the parsed response.
+
 parse_body(
     request_response: Union[Request, Response]
     ) -> Optional[Dict[str, Any]]:
@@ -87,6 +100,31 @@ def parse_request(request_data: Request) -> Dict[str, Any]:
                 "headers": parse_header(request_data.headers),
                 "body": parse_body(request_data),
             },
+        },
+    }
+
+
+def parse_response(response_data: Response) -> Dict[str, Any]:
+    """
+    Parse a Flask Response object and create a dictionary representation.
+
+    Parameters
+    ----------
+    response_data : Response
+        The Flask Response object to be parsed.
+
+    Returns
+    -------
+    Dict[str, Any]
+        A dictionary representation of the parsed response.
+    """
+    return {
+        "title": f"{response_data.status_code}",
+        "timestamp": str(response_data.timestamp),  # type: ignore
+        "details": {
+            "status_code": response_data.status_code,
+            "headers": parse_header(response_data.headers),
+            "body": parse_body(response_data),
         },
     }
 
