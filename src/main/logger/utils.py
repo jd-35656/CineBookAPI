@@ -24,12 +24,51 @@ parse_body(
         Parsed JSON content of the body if Content-Type is
         'application/json', else None.
 
+parse_header(headers: Dict[str, Any]) -> Dict[str, Any]:
+    Parse headers, obfuscating sensitive information
+    (e.g., authorization, cookie).
+
+    Parameters
+    ----------
+    headers : Dict[str, Any]
+        The headers to be parsed.
+
+    Returns
+    -------
+    Dict[str, Any]
+        The parsed headers with sensitive information obfuscated.
 """
 
 import json
 from typing import Any, Dict, Optional, Union
 
 from flask import Request, Response
+
+
+def parse_header(headers: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Parse headers, obfuscating sensitive information
+    (e.g., authorization, cookie).
+
+    Parameters
+    ----------
+    headers : Dict[str, Any]
+        The headers to be parsed.
+
+    Returns
+    -------
+    Dict[str, Any]
+        The parsed headers with sensitive information obfuscated.
+    """
+    res: Dict[str, Any] = {}
+    for key, value in headers.items():
+        if any(
+            keyword in key.lower() for keyword in ["authorization", "cookie"]
+        ):
+            res[key] = "*****"
+        else:
+            res[key] = value
+    return res
 
 
 def parse_body(
