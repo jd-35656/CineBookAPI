@@ -61,6 +61,9 @@ class Logger:
     warning(msg: str) -> None:
         Log a warning message using the configured logger.
 
+    critical(msg: str) -> None:
+        Log a critical message using the configured logger.
+
     Example
     -------
     Create an instance of Logger to initialize the CineBookAPI Flask
@@ -173,3 +176,18 @@ class Logger:
         None
         """
         self._logger.warning(msg)  # type: ignore
+
+    def critical(self, msg: str) -> None:
+        """
+        Log a critical message using the configured logger.
+
+        Parameters
+        ----------
+        msg : str
+            The critical message to be logged.
+
+        Returns
+        -------
+        None
+        """
+        self._logger.critical(msg)  # type: ignore
