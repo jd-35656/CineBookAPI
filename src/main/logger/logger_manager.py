@@ -49,6 +49,9 @@ class Logger:
     init_app(app: Flask) -> None:
         Initialize the Logger with a Flask app.
 
+    debug(msg: str) -> None:
+        Log a debug message using the configured logger.
+
     Example
     -------
     Create an instance of Logger to initialize the CineBookAPI Flask
@@ -101,3 +104,18 @@ class Logger:
         self._handler.setFormatter(self._formatter)
 
         self._logger.addHandler(self._handler)
+
+    def debug(self, msg: str) -> None:
+        """
+        Log a debug message using the configured logger.
+
+        Parameters
+        ----------
+        msg : str
+            The debug message to be logged.
+
+        Returns
+        -------
+        None
+        """
+        self._logger.debug(msg)  # type: ignore
