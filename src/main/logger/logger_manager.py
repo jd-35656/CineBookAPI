@@ -31,7 +31,7 @@ Initialize Logger with a Flask app (e.g., wit) for customized configurations:
 import logging
 from typing import Optional
 
-from flask import Flask
+from flask import Flask, Request, Response
 
 
 class Logger:
@@ -191,3 +191,8 @@ class Logger:
         None
         """
         self._logger.critical(msg)  # type: ignore
+
+    def request_response_logging(
+        self, request_data: Request, response_data: Response
+    ) -> None:
+        pass
