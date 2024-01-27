@@ -63,9 +63,28 @@ parse_header(headers: Dict[str, Any]) -> Dict[str, Any]:
     -------
     Dict[str, Any]
         The parsed headers with sensitive information obfuscated.
+
+calculate_duration(
+    start_timestamp: Optional[str], end_timestamp: Optional[str]
+) -> Optional[float]:
+    Calculate the duration in seconds between two timestamps.
+
+    Parameters
+    ----------
+    start_timestamp : Optional[str]
+        The start timestamp in the format "%Y-%m-%d %H:%M:%S.%f".
+    end_timestamp : Optional[str]
+        The end timestamp in the format "%Y-%m-%d %H:%M:%S.%f".
+
+    Returns
+    -------
+    Optional[float]
+        The duration in seconds if both start and end timestamps are
+        provided, else None.
 """
 
 import json
+from datetime import datetime
 from typing import Any, Dict, Optional, Union
 
 from flask import Request, Response
@@ -179,4 +198,34 @@ def parse_body(
             return json.loads(request_response.data.decode("utf-8"))
         except json.JSONDecodeError:
             return None
+    return None
+
+
+def calculate_duration(
+    start_timestamp: Optional[str], end_timestamp: Optional[str]
+) -> Optional[float]:
+    """
+    Calculate the duration in seconds between two timestamps.
+
+    Parameters
+    ----------
+    start_timestamp : Optional[str]
+        The start timestamp in the format "%Y-%m-%d %H:%M:%S.%f".
+    end_timestamp : Optional[str]
+        The end timestamp in the format "%Y-%m-%d %H:%M:%S.%f".
+
+    Returns
+    -------
+    Optional[float]
+        The duration in seconds if both start and end timestamps are
+        provided, else None.
+    """
+    if end_timestamp and start_timestamp:
+        end_datetime = datetime.strptime(end_timestamp, "%Y-%m-%d %H:%M:%S.%f")
+
+        start_datetime = datetime.strptime(
+            start_timestamp, "%Y-%m-%d %H:%M:%S.%f"
+        )
+        duration_seconds = (end_datetime - start_datetime).total_seconds()
+        return duration_seconds
     return None
