@@ -37,6 +37,9 @@ class MyApp:  # pylint: disable=too-few-public-methods
     def __init__(self) -> None:
         self._app: Flask = Flask("CineBookAPI")
 
+        # Register config
+        self._register_config()
+
         # Incorporate demo route
         self._demo_route()
 
