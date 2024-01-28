@@ -22,6 +22,7 @@ from typing import Dict
 from flask import Flask
 
 from src.main.config import config
+from src.main.logger import logger
 
 
 class MyApp:  # pylint: disable=too-few-public-methods
@@ -66,4 +67,4 @@ class MyApp:  # pylint: disable=too-few-public-methods
         self._app.config.from_object(config)
 
     def _intialize_extensions(self) -> None:
-        pass
+        logger.init_app(self._app)
