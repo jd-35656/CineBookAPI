@@ -16,3 +16,4 @@ class DevConfig(BaseConfig):  # pylint: disable=too-few-public-methods
     """
 
     DEBUG: int = 1
+    LOG_LEVEL: str = "DEBUG"

@@ -16,3 +16,4 @@ class ProdConfig(BaseConfig):  # pylint: disable=too-few-public-methods
     """
 
     DEBUG: int = 1
+    LOG_LEVEL: str = "INFO"
