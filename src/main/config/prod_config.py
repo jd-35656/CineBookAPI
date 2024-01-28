@@ -14,3 +14,5 @@ class ProdConfig(BaseConfig):  # pylint: disable=too-few-public-methods
     """
     Prod configuration class.
     """
+
+    DEBUG: int = 1

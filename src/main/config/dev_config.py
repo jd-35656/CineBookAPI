@@ -14,3 +14,5 @@ class DevConfig(BaseConfig):  # pylint: disable=too-few-public-methods
     """
     Dev configuration class.
     """
+
+    DEBUG: int = 1
