@@ -52,6 +52,9 @@ class MyApp:  # pylint: disable=too-few-public-methods
         Flask
             The Flask application instance.
         """
+        # Initialize extension
+        self._intialize_extensions()
+
         return self._app
 
     def _demo_route(self):
