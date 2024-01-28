@@ -61,3 +61,6 @@ class MyApp:  # pylint: disable=too-few-public-methods
 
     def _register_config(self):
         self._app.config.from_object(config)
+
+    def _intialize_extensions(self) -> None:
+        pass
