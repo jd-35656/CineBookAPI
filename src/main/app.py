@@ -21,6 +21,8 @@ from typing import Dict
 
 from flask import Flask
 
+from src.main.config import config
+
 
 class MyApp:  # pylint: disable=too-few-public-methods
     """
@@ -53,3 +55,6 @@ class MyApp:  # pylint: disable=too-few-public-methods
         @self._app.route("/")
         def index() -> Dict[str, str]:  # type: ignore
             return {"status": "OK"}
+
+    def _register_config(self):
+        self._app.config.from_object(config)
