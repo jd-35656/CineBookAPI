@@ -57,12 +57,12 @@ class MyApp:  # pylint: disable=too-few-public-methods
 
         return self._app
 
-    def _demo_route(self):
+    def _demo_route(self) -> None:
         @self._app.route("/")
         def index() -> Dict[str, str]:  # type: ignore
             return {"status": "OK"}
 
-    def _register_config(self):
+    def _register_config(self) -> None:
         self._app.config.from_object(config)
 
     def _intialize_extensions(self) -> None:
