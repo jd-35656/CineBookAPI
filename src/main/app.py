@@ -57,6 +57,9 @@ class MyApp:  # pylint: disable=too-few-public-methods
         # Initialize extension
         self._intialize_extensions()
 
+        # Register request response logging
+        self._register_request_logging()
+
         return self._app
 
     def _demo_route(self) -> None:
