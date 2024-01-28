@@ -28,10 +28,17 @@ Initialize Logger with a Flask app (e.g., wit) for customized configurations:
     >>> # You now have a Logger instance configured to work with the 'wit'
         Flask app.
 """
+import json
 import logging
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from flask import Flask, Request, Response
+
+from src.main.logger.utils import (
+    calculate_duration,
+    parse_request,
+    parse_response,
+)
 
 
 class Logger:
@@ -63,6 +70,22 @@ class Logger:
 
     critical(msg: str) -> None:
         Log a critical message using the configured logger.
+
+    request_response_logging(
+        self, request_data: Request, response_data: Response
+    ) -> None:
+        Log details of a Flask request and response, including duration.
+
+        Parameters
+        ----------
+        request_data : Request
+            The Flask Request object.
+        response_data : Response
+            The Flask Response object.
+
+        Returns
+        -------
+        None
 
     Example
     -------
@@ -195,4 +218,33 @@ class Logger:
     def request_response_logging(
         self, request_data: Request, response_data: Response
     ) -> None:
-        pass
+        """
+        Log details of a Flask request and response, including duration.
+
+        Parameters
+        ----------
+        request_data : Request
+            The Flask Request object.
+        response_data : Response
+            The Flask Response object.
+
+        Returns
+        -------
+        None
+        """
+        request_data_dict: Dict[str, Any] = parse_request(request_data)
+        response_data_dict: Dict[str, Any] = parse_response(response_data)
+        # pylint: disable=consider-using-f-string
+        self.info(
+            "%s %s\nRequest: %s\nResponse: %s\nDuration: %s seconds"
+            % (
+                request_data_dict["title"],
+                response_data_dict["title"],
+                json.dumps(request_data_dict, indent=2),
+                json.dumps(response_data_dict, indent=2),
+                calculate_duration(
+                    request_data_dict["timestamp"],
+                    response_data_dict["timestamp"],
+                ),
+            )
+        )
