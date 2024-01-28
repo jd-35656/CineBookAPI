@@ -17,9 +17,10 @@ Create an instance of MyApp to initialize the CineBookAPI Flask application:
     >>> my_app_instance = MyApp()
     >>> # You now have a Flask application instance named 'CineBookAPI'.
 """
+from datetime import datetime
 from typing import Dict
 
-from flask import Flask
+from flask import Flask, Response, g, request
 
 from src.main.config import config
 from src.main.logger import logger
@@ -68,3 +69,28 @@ class MyApp:  # pylint: disable=too-few-public-methods
 
     def _intialize_extensions(self) -> None:
         logger.init_app(self._app)
+
+    def _register_request_logging(self) -> None:
+        @self._app.before_request
+        def before_request() -> None:  # type: ignore
+            g.request_data = request
+            g.request_data.timestamp = datetime.now()  # type: ignore
+
+        @self._app.after_request
+        def after_request(response: Response) -> Response:  # type: ignore
+            g.response_data = response
+            g.response_data.timestamp = datetime.now()  # type: ignore
+
+            request_data = g.get("request_data")
+            response_data = g.get("response_data")
+
+            if request_data is not None and response_data is not None:
+                logger.request_response_logging(
+                    request_data=request_data, response_data=response_data
+                )
+
+            # Pop the data after logging
+            g.pop("request_data", None)
+            g.pop("response_data", None)
+
+            return response
