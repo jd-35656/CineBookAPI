@@ -7,6 +7,8 @@ services:
     ports:
       - 8000:8000
     container_name: cine_book_api_container_dev
+    env_file:
+      - ../../.env
     develop:
       watch:
         - path: ../../src/
@@ -17,3 +19,32 @@ services:
             - Pipfile.lock
         - path: ../../Pipfile
           action: rebuild
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    restart: always
+    user: postgres
+    container_name: cine_book_db_container_dev
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=cinebook_db
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: ../../secrets/DBPassword.txt
