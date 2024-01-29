@@ -23,6 +23,7 @@ from typing import Dict
 from flask import Flask, Response, g, request
 
 from src.main.config import config
+from src.main.docs import register_documentation
 from src.main.logger import logger
 
 
@@ -57,6 +58,9 @@ class MyApp:  # pylint: disable=too-few-public-methods
         # Initialize extension
         self._intialize_extensions()
 
+        # Register docs
+        self._register_docs()
+
         # Register request response logging
         self._register_request_logging()
 
@@ -72,6 +76,9 @@ class MyApp:  # pylint: disable=too-few-public-methods
 
     def _intialize_extensions(self) -> None:
         logger.init_app(self._app)
+
+    def _register_docs(self):
+        register_documentation(self._app)
 
     def _register_request_logging(self) -> None:
         @self._app.before_request
