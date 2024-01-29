@@ -97,6 +97,29 @@ class MyDB:
         ------
         DatabaseConnectionError: Exception
             If there is an issue creating the database session.
+
+    @contextmanager
+    transaction(self) -> Generator[Session, Any, Any]:
+        Context manager for creating a transactional database session.
+
+        This method yields a sessionmaker instance, allowing you
+        to interact with the database in a transactional manner.
+        The session should be used within a `with` statement, and
+        it will automatically commit the changes when exiting the
+        block. If an exception occurs during the transaction, it
+        will be rolled back, ensuring data consistency.
+
+        Yields
+        ------
+        Session:
+            A session for adding, editing, and removing
+            data from the database.
+
+        Raises
+        ------
+        SQLAlchemyError: Exception
+            If there is an issue creating the database session or if an error
+            occurs during the transaction.
     """
 
     def __init__(self, app: Optional[Flask] = None) -> None:
@@ -188,6 +211,43 @@ class MyDB:
         try:
             self._db_session = self._create_session()
             yield self._db_session
+        finally:
+            if self._db_session:
+                self._db_session.close()
+
+    @contextmanager
+    def transaction(self) -> Generator[Session, Any, Any]:
+        """
+        Context manager for creating a transactional database session.
+
+        This method yields a sessionmaker instance, allowing you
+        to interact with the database in a transactional manner.
+        The session should be used within a `with` statement, and
+        it will automatically commit the changes when exiting the
+        block. If an exception occurs during the transaction, it
+        will be rolled back, ensuring data consistency.
+
+        Yields
+        ------
+        Session:
+            A session for adding, editing, and removing
+            data from the database.
+
+        Raises
+        ------
+        SQLAlchemyError: Exception
+            If there is an issue creating the database session or if an error
+            occurs during the transaction.
+        """
+        try:
+            self._db_session = self._create_session()
+            self._db_session.begin()
+            yield self._db_session
+            self._db_session.commit()
+        except SQLAlchemyError as e:
+            if self._db_session:
+                self._db_session.rollback()
+            raise e
         finally:
             if self._db_session:
                 self._db_session.close()
