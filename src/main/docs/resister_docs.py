@@ -67,7 +67,7 @@ def register_documentation(app: Flask) -> None:
     """
     api_doc(
         app,
-        config_path="src/main/docs/docfiles/index.yaml",
+        config_path="src/main/docs/static/index.yaml",
         url_prefix="/doc",
         title="CineBookAPI Doc",
     )
