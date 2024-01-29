@@ -28,13 +28,17 @@ Without passing Flask app as an argument.
 >>>app=Flask(__name__)
 >>>db.init_app(app)
 """
-from typing import Optional
+from typing import Any, Optional
 
 from flask import Flask
 from sqlalchemy import Engine, create_engine
-from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session, sessionmaker
 
-from src.main.database.exceptions import DatabaseURINotFoundError
+from src.main.database.exceptions import (
+    DatabaseURINotFoundError,
+    SessionCreationError,
+)
 
 
 class MyDB:
@@ -117,3 +121,15 @@ class MyDB:
             raise DatabaseURINotFoundError("Database URI not found in config")
 
         self._engine = create_engine(self._uri)  # type: ignore
+
+    def _create_session(self) -> Session:
+        if self._engine is None:
+            raise RuntimeError(
+                "Database engine not initialized. \
+                Call init_app() first."
+            )
+        try:
+            sess: Any = sessionmaker(bind=self._engine)
+            return sess()
+        except SQLAlchemyError as e:
+            raise SessionCreationError(f"Error creating session!: {e}") from e
