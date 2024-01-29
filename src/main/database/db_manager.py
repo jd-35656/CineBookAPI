@@ -28,7 +28,8 @@ Without passing Flask app as an argument.
 >>>app=Flask(__name__)
 >>>db.init_app(app)
 """
-from typing import Any, Optional
+from contextlib import contextmanager
+from typing import Any, Generator, Optional
 
 from flask import Flask
 from sqlalchemy import Engine, create_engine
@@ -72,6 +73,30 @@ class MyDB:
         ------
         DatabaseURINotFoundError
             If the 'DATABASE_URI' configuration is not found in the app.
+
+    session(self) -> Generator[Session, None, None]:
+        Context manager for creating a session to read data
+        from the database.
+
+        This method yields a sessionmaker instance, allowing you
+        to interact with the database in a read-only manner. The
+        session should be used within a `with` statement, and it
+        will be automatically closed when exiting the block.
+
+        Yields
+        ------
+        Session: class
+            A Session for reading data from the database.
+
+        Note
+        ----
+        Make sure to use this session only for read operations
+        to avoid unintentional modifications to the database.
+
+        Raises
+        ------
+        DatabaseConnectionError: Exception
+            If there is an issue creating the database session.
     """
 
     def __init__(self, app: Optional[Flask] = None) -> None:
@@ -133,3 +158,36 @@ class MyDB:
             return sess()
         except SQLAlchemyError as e:
             raise SessionCreationError(f"Error creating session!: {e}") from e
+
+    @contextmanager
+    def session(self) -> Generator[Session, None, None]:
+        """
+        Context manager for creating a session to read data
+        from the database.
+
+        This method yields a sessionmaker instance, allowing you
+        to interact with the database in a read-only manner. The
+        session should be used within a `with` statement, and it
+        will be automatically closed when exiting the block.
+
+        Yields
+        ------
+        Session: class
+            A Session for reading data from the database.
+
+        Note
+        ----
+        Make sure to use this session only for read operations
+        to avoid unintentional modifications to the database.
+
+        Raises
+        ------
+        DatabaseConnectionError: Exception
+            If there is an issue creating the database session.
+        """
+        try:
+            self._db_session = self._create_session()
+            yield self._db_session
+        finally:
+            if self._db_session:
+                self._db_session.close()
