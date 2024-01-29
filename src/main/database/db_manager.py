@@ -23,13 +23,18 @@ Passing Flask as an argument.
 
 Without passing Flask app as an argument.
 >>>from db_manager import MyDB
+>>>from flask import Flask
 >>>db=MyDB()
+>>>app=Flask(__name__)
+>>>db.init_app(app)
 """
 from typing import Optional
 
 from flask import Flask
-from sqlalchemy import Engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
+
+from src.main.database.exceptions import DatabaseURINotFoundError
 
 
 class MyDB:
@@ -45,9 +50,70 @@ class MyDB:
     ----
         app: (Optional[Flask])
             Flask application instance.
+    Methods
+    -------
+    init_app(self, app: Flask) -> None:
+        Initialize the database manager with a Flask app.
+
+        Parameters
+        ----------
+        app : Flask
+            The Flask application instance.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        DatabaseURINotFoundError
+            If the 'DATABASE_URI' configuration is not found in the app.
     """
 
     def __init__(self, app: Optional[Flask] = None) -> None:
+        self._app: Optional[Flask] = app
         self._uri: Optional[str] = None
         self._engine: Optional[Engine] = None
         self._db_session: Optional[Session] = None
+
+        if self._app:
+            self.init_app(self._app)
+
+    def init_app(self, app: Flask) -> None:
+        """
+        Initialize the database manager with a Flask app.
+
+        Parameters
+        ----------
+        app : Flask
+            The Flask application instance.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        DatabaseURINotFoundError
+            If the 'DATABASE_URI' configuration is not found in the app.
+
+        Notes
+        -----
+        This method initializes the database manager with the 'DATABASE_URI'
+        configurationnfrom the Flask app. If the 'DATABASE_URI' is not found
+        in the app configuration, it raises a DatabaseURINotFoundError.
+        Otherwise, it creates a database engine using the provided URI.
+
+        Example
+        -------
+        >>> from flask import Flask
+        >>> from your_module import YourDatabaseManager
+        >>> app = Flask(__name__)
+        >>> db_manager = YourDatabaseManager()
+        >>> db_manager.init_app(app)
+        """
+        self._uri = app.config["DATABASE_URI"]
+        if self._uri is None:  # type: ignore
+            raise DatabaseURINotFoundError("Database URI not found in config")
+
+        self._engine = create_engine(self._uri)  # type: ignore
