@@ -7,6 +7,8 @@ name = "pypi"
 flask = "<3.1.0,>=3.0.1"
 gunicorn = "<21.3.0,>=21.2.0"
 swagger-ui-py = "<23.10.0,>=23.9.23"
+sqlalchemy = "<2.1.0,>=2.0.25"
+psycopg2-binary = "<2.10.0,>=2.9.9"
 
 [dev-packages]
 pylint = "<3.1.0,>=3.0.3"
