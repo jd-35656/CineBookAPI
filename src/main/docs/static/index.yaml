@@ -1,0 +1,24 @@
+openapi: "3.0.0"
+info:
+  title: "CineBookAPI"
+  version: "1.0.0"
+  description: |
+    A cinema management solution designed to enhance operations and elevate 
+    the moviegoing experience. Streamlining theater processes with adaptable
+    show scheduling and personalized user interactions. Collaborative tools
+    enable partners to coordinate show schedules and verify tickets seamlessly,
+    ensuring a smooth cinematic journey for all stakeholders.
+
+paths:
+  /:
+    get:
+      summary: "Get Health"
+      description: "Retrieve health status from the API."
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              example:
+                message:
+                  status: "OK"
