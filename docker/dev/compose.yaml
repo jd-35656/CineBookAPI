@@ -9,6 +9,8 @@ services:
     container_name: cine_book_api_container_dev
     env_file:
       - ../../.env
+    volumes:
+      - ../../migration/:/app/migration/
     develop:
       watch:
         - path: ../../src/
@@ -39,7 +41,7 @@ services:
     ports:
       - 5432:5432
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: ["CMD", "pg_isready"]
       interval: 10s
       timeout: 5s
       retries: 5
