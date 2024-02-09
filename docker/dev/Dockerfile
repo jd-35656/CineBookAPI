@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION=3.12.1
-FROM python:${PYTHON_VERSION}-slim as base
+FROM python:${PYTHON_VERSION}-slim AS base
 
 # Set python environments
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -16,7 +16,7 @@ RUN --mount=type=bind,source=Pipfile,target=Pipfile \
     pipenv install --ignore-pipfile --dev --system
 
 # Copy the source code into the container.
-COPY src/ src/
+COPY . .
 
 # Expose the port that the application listens on.
 EXPOSE 8000
