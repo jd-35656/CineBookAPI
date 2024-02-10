@@ -34,6 +34,7 @@ class OwnerSessionModel(Base):
     __tablename__ = "owner_sessions"
 
     session_id: Mapped[UUID] = mapped_column(
+        primary_key=True,
         default=uuid1,
     )
     owner_id: Mapped[UUID] = mapped_column(
