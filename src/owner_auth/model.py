@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from src.main.database.base import Base
 
 
-class OwnerSessionModel(Base):
+class OwnerSessionModel(Base):  # pylint: disable=too-few-public-methods
     """Model representing owner sessions in the database.
 
     Parameters

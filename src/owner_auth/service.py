@@ -24,24 +24,20 @@ from src.owner_detail.schema import OwnerDetailSchema
 
 class OwnerSessionService:
     """
-    Service class for handling owner registration.
+    Service class for handling owner authentication.
 
-    Provides methods to handle the registration of owners and their details.
+    Provides methods to handle the registration, login, and logout of owners.
 
     Methods
     -------
     register_service(data: Dict[str, Any])
         Handles the registration of an owner and their details.
 
-        Parameters
-        ----------
-        data : Dict[str, Any]
-            Data containing owner and owner detail information.
+    login_service(data: Dict[str, Any]) -> Dict[str, Any]
+        Handles the login of an owner and returns session information.
 
-        Raises
-        ------
-        Exception
-            If an error occurs during registration.
+    logout_service(header: Dict[str, Any])
+        Handles the logout of an owner based on the session ID in headers.
     """
 
     @staticmethod
@@ -83,6 +79,24 @@ class OwnerSessionService:
 
     @staticmethod
     def login_service(data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Handles the login of an owner and returns session information.
+
+        Parameters
+        ----------
+        data : Dict[str, Any]
+            Data containing owner login credentials.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Session information upon successful login.
+
+        Raises
+        ------
+        ValueError
+            If the provided credentials are invalid.
+        """
         with db.session() as session:
             schema = OwnerLoginSchema()
             serialized_data = schema.load(data)
@@ -114,6 +128,20 @@ class OwnerSessionService:
 
     @staticmethod
     def logout_service(header: Dict[str, Any]) -> None:
+        """
+        Handles the logout of an owner based on the session ID in headers.
+
+        Parameters
+        ----------
+        header : Dict[str, Any]
+            Request headers containing session ID.
+
+        Raises
+        ------
+        KeyError
+            If the session ID is missing from the headers.
+        """
+
         session_id = header["Authorization"]
         with db.session() as session:
             session.query(
