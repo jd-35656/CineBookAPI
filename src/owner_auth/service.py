@@ -16,6 +16,8 @@ from typing import Any, Dict
 from src.main.database import db
 from src.owner.model import OwnerModel
 from src.owner.schema import OwnerSchema
+from src.owner_auth.model import OwnerSessionModel
+from src.owner_auth.schema import OwnerLoginSchema, SessionSchema
 from src.owner_detail.model import OwnerDetailModel
 from src.owner_detail.schema import OwnerDetailSchema
 
@@ -78,3 +80,34 @@ class OwnerSessionService:
                 **serialize_owner_detail_data,  # type: ignore
             )
             session.add(owner_detail_data)
+
+    @staticmethod
+    def login_service(data: Dict[str, Any]) -> Dict[str, Any]:
+        with db.session() as session:
+            schema = OwnerLoginSchema()
+            serialized_data = schema.load(data)
+
+            owner = (
+                session.query(
+                    OwnerModel,
+                )
+                .filter_by(
+                    **serialized_data,  # type: ignore
+                )
+                .first()
+            )
+
+            if not owner:
+                raise ValueError(
+                    "Invalide credentials"
+                )  # pylint: disable=all # type: ignore
+
+            session_schema = SessionSchema()
+            sess_data = session_schema.load({"owner_id": owner.id})
+            sess = OwnerSessionModel(**sess_data)  # type: ignore
+            session.add(sess)
+            session.commit()
+
+            deserialize_data = session_schema.dump(sess)
+
+            return deserialize_data  # type: ignore
