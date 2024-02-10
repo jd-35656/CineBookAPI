@@ -87,5 +87,31 @@ class OwnerDetailSchema(Schema):
         required=True,
     )
     owner_id = fields.UUID(
-        dump_only=True,
+        load_only=True,
+    )
+
+
+class OwnerDetailUpdateSchema(Schema):
+
+    @staticmethod
+    def validate_age(dob):
+        if dob:
+            age = (datetime.now() - dob).days // 365
+            if age < 18:
+                raise ValidationError("Age must be greater than 18.")
+
+    name = fields.String(
+        validate=validate.Length(
+            min=3,
+            max=20,
+        ),
+    )
+    dob = fields.DateTime(
+        validate=validate_age,
+    )
+    gender = fields.Enum(
+        Gender,
+    )
+    address = fields.Nested(
+        AddressSchema,
     )
