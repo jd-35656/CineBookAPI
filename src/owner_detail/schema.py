@@ -7,8 +7,6 @@ and update details.
 
 Classes
 -------
-Gender : Enum class
-    Enum class defining gender options.
 AddressSchema : Schema class
     Schema for validating address details.
 OwnerDetailSchema : Schema class
@@ -18,28 +16,48 @@ OwnerDetailUpdateSchema : Schema class
 """
 
 from datetime import datetime
-from enum import Enum
 
 from marshmallow import Schema, ValidationError, fields, validate
 
 
-class Gender(Enum):
+def validate_gender(gender) -> None:
     """
-    Enumeration for representing gender options.
+    Validate that the owner's gender.
 
-    Attributes
+    Parameters
     ----------
-    MALE : str
-        Male gender.
-    FEMALE : str
-        Female gender.
-    OTHER : str
-        Other gender.
-    """
+    gender : str
+        Gender of the owner.
 
-    MALE = "male"
-    FEMALE = "female"
-    OTHER = "other"
+    Raises
+    ------
+    ValidationError
+        If the owner's gender is not one of male, female, other.
+    """
+    if gender and gender.lower() not in ["male", "female", "other"]:
+        raise ValidationError(
+            "Gender must be either 'male', 'female', or 'other'."
+        )
+
+
+def validate_age(dob):
+    """
+    Validate that the owner's age is greater than 18.
+
+    Parameters
+    ----------
+    dob : DateTime
+        Date of birth of the owner.
+
+    Raises
+    ------
+    ValidationError
+        If the owner's age is less than 18.
+    """
+    if dob:
+        age = (datetime.now() - dob).days // 365
+        if age < 18:
+            raise ValidationError("Age must be greater than 18.")
 
 
 class AddressSchema(Schema):
@@ -126,26 +144,6 @@ class OwnerDetailSchema(Schema):
         Identifier for the owner (load-only).
     """
 
-    @staticmethod
-    def validate_age(dob):
-        """
-        Validate that the owner's age is greater than 18.
-
-        Parameters
-        ----------
-        dob : DateTime
-            Date of birth of the owner.
-
-        Raises
-        ------
-        ValidationError
-            If the owner's age is less than 18.
-        """
-        if dob:
-            age = (datetime.now() - dob).days // 365
-            if age < 18:
-                raise ValidationError("Age must be greater than 18.")
-
     id = fields.UUID(
         dump_only=True,
     )
@@ -157,12 +155,12 @@ class OwnerDetailSchema(Schema):
         ),
     )
     dob = fields.DateTime(
-        reqired=True,
+        required=True,
         validate=validate_age,
     )
-    gender = fields.Enum(
-        Gender,
+    gender = fields.String(
         required=True,
+        validate=validate_gender,
     )
     address = fields.Nested(
         AddressSchema,
@@ -189,26 +187,6 @@ class OwnerDetailUpdateSchema(Schema):
         Address details of the owner.
     """
 
-    @staticmethod
-    def validate_age(dob):
-        """
-        Validate that the owner's age is greater than 18.
-
-        Parameters
-        ----------
-        dob : DateTime
-            Date of birth of the owner.
-
-        Raises
-        ------
-        ValidationError
-            If the owner's age is less than 18.
-        """
-        if dob:
-            age = (datetime.now() - dob).days // 365
-            if age < 18:
-                raise ValidationError("Age must be greater than 18.")
-
     name = fields.String(
         validate=validate.Length(
             min=3,
@@ -218,8 +196,8 @@ class OwnerDetailUpdateSchema(Schema):
     dob = fields.DateTime(
         validate=validate_age,
     )
-    gender = fields.Enum(
-        Gender,
+    gender = fields.String(
+        validate=validate_gender,
     )
     address = fields.Nested(
         AddressSchema,
