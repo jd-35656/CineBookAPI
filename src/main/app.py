@@ -17,11 +17,13 @@ Create an instance of MyApp to initialize the CineBookAPI Flask application:
     >>> my_app_instance = MyApp()
     >>> # You now have a Flask application instance named 'CineBookAPI'.
 """
+
 from datetime import datetime
 from typing import Dict
 
 from flask import Flask, Response, g, request
 
+from src.main.blueprints import BLUEPRINTS
 from src.main.config import config
 from src.main.database import db
 from src.main.docs import register_documentation
@@ -59,6 +61,9 @@ class MyApp:  # pylint: disable=too-few-public-methods
         # Initialize extension
         self._intialize_extensions()
 
+        # Register Blueprints
+        self._register_blueprints()
+
         # Register docs
         self._register_docs()
 
@@ -78,6 +83,12 @@ class MyApp:  # pylint: disable=too-few-public-methods
     def _intialize_extensions(self) -> None:
         logger.init_app(self._app)
         db.init_app(self._app)
+
+    def _register_blueprints(self) -> None:
+        if not BLUEPRINTS:
+            return
+        for blp_details in BLUEPRINTS:
+            self._app.register_blueprint(**blp_details)
 
     def _register_docs(self):
         register_documentation(self._app)
