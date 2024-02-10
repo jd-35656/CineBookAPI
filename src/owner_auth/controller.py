@@ -27,6 +27,7 @@ from sqlalchemy.exc import DataError, IntegrityError, SQLAlchemyError
 
 from src.owner_auth import blp
 from src.owner_auth.service import OwnerSessionService
+from src.owner_auth.utils import is_owner_loggedin
 
 
 @blp.post("/register")
@@ -104,6 +105,23 @@ def login():
     except ValueError as e:
         return {"message": f"Invalid credential: {e}"}, 400
 
+    except ConnectionError as e:
+        return {"message": f"Connection error: {e}"}, 503
+
+    except SQLAlchemyError as e:
+        return {"message": f"Database error: {e}"}, 500
+
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        return {"message": f"An unexpected error occurred: {e}"}, 500
+
+
+@blp.post("/logout")
+@is_owner_loggedin
+def logout():
+    try:
+        header = request.headers
+        OwnerSessionService.logout_service(header)
+        return {"message": "Sucessfully logged out"}, 200
     except ConnectionError as e:
         return {"message": f"Connection error: {e}"}, 503
 
