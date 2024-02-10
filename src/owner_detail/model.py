@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Dict, Union
 from uuid import UUID, uuid1
 
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.main.database.base import Base
@@ -61,4 +62,8 @@ class OwnerDetailModel(Base):  # pylint: disable= too-few-public-methods
     updated: Mapped[datetime] = mapped_column(
         default=datetime.now().isoformat(),
         onupdate=datetime.now().isoformat(),
+    )
+    owner_id: Mapped[UUID] = mapped_column(
+        ForeignKey("owner.id"),
+        nullable=False,
     )
