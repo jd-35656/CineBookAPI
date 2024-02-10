@@ -112,22 +112,23 @@ class OwnerLoginSchema(Schema):
             data["password"] = hashed_password
         return data
 
-    class SessionSchema(Schema):
-        """
-        Schema for managing session details.
 
-        Attributes
-        ----------
-        session_id : UUID field
-            Field for session identifier. Only used for dumping.
-        owner_id : UUID field
-            Field for owner identifier. Only used for loading.
-        """
+class SessionSchema(Schema):
+    """
+    Schema for managing session details.
 
-        session_id = fields.UUID(
-            dump_only=True,
-        )
-        owner_id = fields.UUID(
-            required=True,
-            load_only=True,
-        )
+    Attributes
+    ----------
+    session_id : UUID field
+        Field for session identifier. Only used for dumping.
+    owner_id : UUID field
+        Field for owner identifier. Only used for loading.
+    """
+
+    session_id = fields.UUID(
+        dump_only=True,
+    )
+    owner_id = fields.UUID(
+        required=True,
+        load_only=True,
+    )
