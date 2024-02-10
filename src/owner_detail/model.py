@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Dict, Union
 from uuid import UUID, uuid1
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import JSON, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.main.database.base import Base
@@ -45,7 +45,6 @@ class OwnerDetailModel(Base):  # pylint: disable= too-few-public-methods
     )
     name: Mapped[str] = mapped_column(
         nullable=True,
-        unique=True,
     )
     dob: Mapped[datetime] = mapped_column(
         nullable=False,
@@ -54,6 +53,7 @@ class OwnerDetailModel(Base):  # pylint: disable= too-few-public-methods
         nullable=False,
     )
     address: Mapped[Dict[str, Union[str, int]]] = mapped_column(
+        JSON,
         nullable=False,
     )
     created: Mapped[datetime] = mapped_column(
@@ -64,6 +64,6 @@ class OwnerDetailModel(Base):  # pylint: disable= too-few-public-methods
         onupdate=datetime.now().isoformat(),
     )
     owner_id: Mapped[UUID] = mapped_column(
-        ForeignKey("owner.id"),
+        ForeignKey("owners.id"),
         nullable=False,
     )
