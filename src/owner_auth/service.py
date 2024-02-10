@@ -111,3 +111,13 @@ class OwnerSessionService:
             deserialize_data = session_schema.dump(sess)
 
             return deserialize_data  # type: ignore
+
+    @staticmethod
+    def logout_service(header: Dict[str, Any]) -> None:
+        session_id = header["Authorization"]
+        with db.session() as session:
+            session.query(
+                OwnerSessionModel,
+            ).filter_by(
+                session_id=session_id,
+            ).delete()
