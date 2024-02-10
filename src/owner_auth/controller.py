@@ -71,3 +71,44 @@ def register():
 
     except Exception as e:  # pylint: disable=broad-exception-caught
         return {"message": f"An unexpected error occurred: {e}"}, 500
+
+
+@blp.post("/login")
+def login():
+    """
+    Register a new owner.
+
+    This route handler registers a new owner based on the provided JSON
+    payload containing owner data. It catches and handles various types
+    of errors that might occur during the registration process, including
+    validation errors, integrity errors, data errors, connection errors,
+    SQLAlchemy errors, and general exceptions.
+
+    Returns
+    -------
+    JSON
+        A JSON response containing a success message and an appropriate
+        HTTP status code upon successful registration. In case of errors,
+        it returns a corresponding error message along with an appropriate
+        HTTP status code.
+
+    """
+    try:
+        data = request.get_json()
+        res = OwnerSessionService.login_service(data)
+        return res, 200
+
+    except ValidationError as e:
+        return {"message": f"Invalid data: {e}"}, 422
+
+    except ValueError as e:
+        return {"message": f"Invalid credential: {e}"}, 400
+
+    except ConnectionError as e:
+        return {"message": f"Connection error: {e}"}, 503
+
+    except SQLAlchemyError as e:
+        return {"message": f"Database error: {e}"}, 500
+
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        return {"message": f"An unexpected error occurred: {e}"}, 500
