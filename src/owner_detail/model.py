@@ -44,7 +44,7 @@ class OwnerDetailModel(Base):  # pylint: disable= too-few-public-methods
         default=uuid1(),
     )
     name: Mapped[str] = mapped_column(
-        nullable=True,
+        nullable=False,
     )
     dob: Mapped[datetime] = mapped_column(
         nullable=False,
@@ -66,4 +66,5 @@ class OwnerDetailModel(Base):  # pylint: disable= too-few-public-methods
     owner_id: Mapped[UUID] = mapped_column(
         ForeignKey("owners.id"),
         nullable=False,
+        unique=True,
     )
