@@ -68,7 +68,7 @@ def is_owner_loggedin(func):
     return wrapper
 
 
-def get_owner_id():
+def get_owner_id() -> str:
     """
     Retrieve the owner ID associated with the session ID from
     the request headers.
@@ -98,5 +98,6 @@ def get_owner_id():
 
     if not sess:
         abort(401, "Unauthorized: Invalid session ID")
+    owner_id = str(sess.owner_id)
 
-    return sess
+    return owner_id
