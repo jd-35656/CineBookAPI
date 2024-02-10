@@ -121,3 +121,4 @@ class OwnerSessionService:
             ).filter_by(
                 session_id=session_id,
             ).delete()
+            session.commit()
