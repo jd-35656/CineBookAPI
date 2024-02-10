@@ -88,7 +88,7 @@ class MyApp:  # pylint: disable=too-few-public-methods
         if not BLUEPRINTS:
             return
         for blp_details in BLUEPRINTS:
-            self._app.register_blueprint(**blp_details)
+            self._app.register_blueprint(**blp_details)  # type: ignore
 
     def _register_docs(self):
         register_documentation(self._app)
