@@ -13,9 +13,9 @@ services:
       - ../../migration/:/app/migration/
     develop:
       watch:
-        - path: ../../src/
+        - path: ../../
           action: sync
-          target: /app/src/
+          target: /app/
           ignore:
             - Pipfile
             - Pipfile.lock
