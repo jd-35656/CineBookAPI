@@ -23,6 +23,7 @@ from typing import Dict
 
 from flask import Flask, Response, g, request
 
+from src.main import routes  # noqa # pylint: disable=unused-import
 from src.main.blueprints import BLUEPRINTS
 from src.main.config import config
 from src.main.database import db
