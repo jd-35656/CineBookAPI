@@ -8,7 +8,7 @@ from flask import Blueprint
 # pylint: disable=unused-argument
 def register(
     blueprint: Blueprint,
-    endpoint: str,
+    url_prefix: str,
     name: str,
 ) -> Dict[str, Union[str, Blueprint]]:
     """
@@ -27,6 +27,6 @@ def register(
     """
     return {
         "blueprint": blueprint,
-        "endpoint": endpoint,
+        "url_prefix": url_prefix,
         "name": name,
     }
