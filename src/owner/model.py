@@ -24,7 +24,7 @@ updated : Mapped[datetime]
 from datetime import datetime
 from uuid import UUID, uuid1
 
-from sqlalchemy import Integer, String, Uuid
+from sqlalchemy import String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.main.database.base import Base
@@ -59,16 +59,15 @@ class OwnerModel(Base):  # pylint: disable= too-few-public-methods
     )
     email: Mapped[str] = mapped_column(
         String(20),
-        nullable=True,
+        nullable=False,
         unique=True,
     )
     phone: Mapped[int] = mapped_column(
-        Integer,
         unique=True,
     )
     password: Mapped[str] = mapped_column(
         String(64),
-        nullable=True,
+        nullable=False,
     )
     created: Mapped[datetime] = mapped_column(
         default=datetime.now().isoformat(),
