@@ -29,12 +29,13 @@ OwnerUpdateSchema : class
 """
 
 import hashlib
+from typing import Any, Dict
 
 from marshmallow import (
     Schema,
     ValidationError,
     fields,
-    pre_load,
+    post_load,
     validate,
     validates_schema,
 )
@@ -87,8 +88,9 @@ class OwnerSchema(Schema):
         required=True,
     )
 
-    @pre_load
-    def process_input(self, data, **kwargs):  # pylint: disable=unused-argument
+    @post_load
+    # pylint: disable=unused-argument
+    def hash_password(self, data: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         """
         Pre-processing method to hash the password before
         loading into the schema.
@@ -103,6 +105,7 @@ class OwnerSchema(Schema):
         dict
             Processed data with hashed password.
         """
+
         if "password" in data:
             password_bytes = data["password"].encode("utf-8")
             hashed_password = hashlib.sha256(password_bytes).hexdigest()
@@ -172,8 +175,9 @@ class OwnerUpdateSchema(Schema):
                 "At least one field (email, phone, password) must be provided."
             )
 
-    @pre_load
-    def process_input(self, data, **kwargs):  # pylint: disable=unused-argument
+    @post_load
+    # pylint: disable=unused-argument
+    def hash_password(self, data: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         """
         Pre-processing method to hash the password before
         loading into the schema.
@@ -188,6 +192,7 @@ class OwnerUpdateSchema(Schema):
         dict
             Processed data with hashed password.
         """
+
         if "password" in data:
             password_bytes = data["password"].encode("utf-8")
             hashed_password = hashlib.sha256(password_bytes).hexdigest()
