@@ -11,6 +11,9 @@ Classes
 OwnerLoginSchema : Schema class
     Schema for validating owner login details.
 
+SessionSchema : Schema class
+    Schema for managing session details.
+
 """
 
 import hashlib
@@ -108,3 +111,23 @@ class OwnerLoginSchema(Schema):
             hashed_password = hashlib.sha256(password_bytes).hexdigest()
             data["password"] = hashed_password
         return data
+
+    class SessionSchema(Schema):
+        """
+        Schema for managing session details.
+
+        Attributes
+        ----------
+        session_id : UUID field
+            Field for session identifier. Only used for dumping.
+        owner_id : UUID field
+            Field for owner identifier. Only used for loading.
+        """
+
+        session_id = fields.UUID(
+            dump_only=True,
+        )
+        owner_id = fields.UUID(
+            required=True,
+            load_only=True,
+        )
